@@ -1,13 +1,13 @@
 'use client';
 
-import { Sidebar } from './components/sidebar';
-import { Header } from './components/header';
-import { StatsCards } from './components/dashboard/stats-cards';
-import { GamificationPreviewCards } from './components/dashboard/gamification-cards';
-import { TodaysQuests } from './components/dashboard/todays-quests';
-import { RecentActivity } from './components/dashboard/recent-activity';
+import { Sidebar } from '../sidebar';
+import { Header } from '../header';
+import { StatsCards } from './stats-cards';
+import { GamificationPreviewCards } from './gamification-cards';
+import { TodaysQuests } from './todays-quests';
+import { RecentActivity } from './recent-activity';
 
-export default function Dashboard() {
+export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="flex">
