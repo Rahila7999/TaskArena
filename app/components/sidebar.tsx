@@ -2,7 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
+import { LogOut } from 'lucide-react';
 import { useTheme } from './theme-provider';
+import { UserAvatar } from './ui/user-avatar';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: '📊' },
@@ -32,6 +35,11 @@ const adminNavigation = [
 export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { data: session } = useSession();
+
+  const userName = session?.user?.name || 'Warrior';
+  const userAvatar = session?.user?.avatar || session?.user?.image || '';
+  const userRole = session?.user?.role || 'TaskArena Member';
 
   return (
     <>
@@ -99,23 +107,44 @@ export function Sidebar() {
         </nav>
 
         <div className="p-4 border-t border-border space-y-4">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
-              A
+          {session?.user ? (
+            <div className="flex items-center gap-3 p-2.5 rounded-xl bg-muted/50 border border-border/60">
+              <Link href="/profile" className="flex items-center gap-3 flex-1 min-w-0 group cursor-pointer">
+                <UserAvatar name={userName} avatar={userAvatar} size="sm" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-foreground truncate group-hover:text-blue-400 transition-colors">
+                    {userName}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground truncate">{userRole}</p>
+                </div>
+              </Link>
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: '/login' })}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+                title="Log out"
+                aria-label="Log out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">Alex Rivera</p>
-              <p className="text-xs text-muted-foreground">Product Manager</p>
+          ) : (
+            <div className="flex items-center justify-between p-2.5 rounded-xl bg-muted/50 border border-border/60">
+              <Link
+                href="/login"
+                className="text-xs font-semibold text-blue-500 hover:underline"
+              >
+                Log in to TaskArena
+              </Link>
+              <button
+                onClick={toggleTheme}
+                className="p-1.5 rounded-lg hover:bg-muted transition-colors text-xs"
+                title="Toggle theme"
+              >
+                {theme === 'dark' ? '☀️' : '🌙'}
+              </button>
             </div>
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
-              title="Toggle theme"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
-          </div>
+          )}
         </div>
       </aside>
 

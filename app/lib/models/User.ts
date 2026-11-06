@@ -13,8 +13,9 @@ export type UserRole = 'Admin' | 'Manager' | 'Employee';
 export interface UserDoc extends Document {
   name: string;
   email: string;
-  passwordHash: string;
+  passwordHash?: string;
   avatar?: string;
+  provider?: 'credentials' | 'github' | 'google';
   role: UserRole;
   department?: string;
   xp: number;
@@ -45,7 +46,12 @@ const UserSchema = new mongoose.Schema(
     },
     passwordHash: {
       type: String,
-      required: [true, 'Password hash is required'],
+      required: false,
+    },
+    provider: {
+      type: String,
+      enum: ['credentials', 'github', 'google'],
+      default: 'credentials',
     },
     avatar: {
       type: String,
